@@ -40,7 +40,6 @@ class KyashPay
 			$response = $this->modifiedJsonDecode($response, true);
 		}
         curl_close($curl);
-		
 		if($this->logger && is_object($this->logger) && method_exists($this->logger,'write'))
 		{
 			$this->logger->write('Request: '.$url);
@@ -150,23 +149,22 @@ class KyashPay
 	
 	public function handler($params,$kyash_code,$kyash_status,$url,$order)
     {
-		$this->logger->write($params);
 		$protocol = $this->getProtocol();
 		
-		if ($protocol == 'https')
+		if ($protocol === 'https')
 		{
 			if (isset($_SERVER['PHP_AUTH_USER']) && isset($_SERVER['PHP_AUTH_PW'])) 
 			{
 				$httpd_username = filter_var($_SERVER['PHP_AUTH_USER'],FILTER_SANITIZE_STRING,FILTER_FLAG_ENCODE_HIGH|FILTER_FLAG_ENCODE_LOW);
 				$httpd_password = filter_var($_SERVER['PHP_AUTH_PW'],FILTER_SANITIZE_STRING,FILTER_FLAG_ENCODE_HIGH|FILTER_FLAG_ENCODE_LOW);
-				if ($httpd_username == $this->key && $httpd_password == $this->secret) 
+				if ($httpd_username === $this->key && $httpd_password === $this->secret)
 				{
 					$order_id = trim($params['order_id']);
 					$code = trim($params['kyash_code']);
 					$status = trim($params['status']);
 					$phone = trim($params['paid_by']);
 					
-					if($kyash_code != $kyash)
+					if($kyash_code != $code)
 					{
 						if($this->logger && is_object($this->logger) && method_exists($this->logger,'write'))
 						{
@@ -176,9 +174,9 @@ class KyashPay
 					}
 					else
 					{
-						if($status == 'paid')
+						if($status === 'paid')
 						{
-							if($kyash_status == 'pending')
+							if($kyash_status === 'pending')
 							{
 								$comment = "The customer ($phone) has made the payment on Kyash payshop point";
 								$order->update('paid',$comment);
@@ -189,9 +187,9 @@ class KyashPay
 								}
 							}
 						}
-						else if($status == 'expired')
+						else if($status === 'expired')
 						{
-							if($kyash_status == 'pending')
+							if($kyash_status === 'pending')
 							{
 								$comment = "The order was canceled since kyash payment was expired.";
 								$order->update('expired',$comment);
@@ -236,10 +234,6 @@ class KyashPay
 		{
 			$headers = getallheaders();
 			$authorization = isset($headers['Authorization']) ? $headers['Authorization'] : '';
-			if($this->logger && is_object($this->logger) && method_exists($this->logger,'write'))
-			{
-				$this->logger->write('Authorization:'.$authorization);
-			}
 			
 			if(!empty($authorization))
 			{
@@ -248,14 +242,27 @@ class KyashPay
 				$status = trim($params['status']);
 				$phone = trim($params['paid_by']);
 				$amount = trim($params['amount']);
+				$timestamp = trim($_REQUEST['timestamp']);
+				$nonce= trim($_REQUEST['nonce']);
 				
 				//prepare normalized request string
-				$normalized_request_string = urlencode(utf8_encode('amount')).'='.urlencode(utf8_encode($amount));
-				$normalized_request_string .= '&'.urlencode(utf8_encode('kyash_code')).'='.urlencode(utf8_encode($code));
-				$normalized_request_string .= '&'.urlencode(utf8_encode('order_id')).'='.urlencode(utf8_encode($order_id));
-				$normalized_request_string .= '&'.urlencode(utf8_encode('paid_by')).'='.urlencode(utf8_encode($phone));
-				$normalized_request_string .= '&'.urlencode(utf8_encode('status')).'='.urlencode(utf8_encode($status));
-				
+				if($status === 'paid') {
+					$normalized_request_string = urlencode(utf8_encode('amount').'='.utf8_encode($amount));
+					$normalized_request_string .= urlencode('&'.utf8_encode('kyash_code').'='.utf8_encode($code));
+					$normalized_request_string .= urlencode('&'.utf8_encode('nonce').'='.utf8_encode($nonce));
+					$normalized_request_string .= urlencode('&'.utf8_encode('order_id').'='.utf8_encode($order_id));
+					$normalized_request_string .= urlencode('&'.utf8_encode('paid_by').'='.utf8_encode($phone));
+					$normalized_request_string .= urlencode('&'.utf8_encode('status').'='.utf8_encode($status));
+					$normalized_request_string .= urlencode('&'.utf8_encode('timestamp').'='.utf8_encode($timestamp));
+				}
+				else {
+					$normalized_request_string = urlencode(utf8_encode('kyash_code').'='.utf8_encode($code));
+					$normalized_request_string .= urlencode('&'.utf8_encode('nonce').'='.utf8_encode($nonce));
+					$normalized_request_string .= urlencode('&'.utf8_encode('order_id').'='.utf8_encode($order_id));
+					$normalized_request_string .= urlencode('&'.utf8_encode('status').'='.utf8_encode($status));
+					$normalized_request_string .= urlencode('&'.utf8_encode('timestamp').'='.utf8_encode($timestamp));
+				}
+
 				//prepare request signature
 				$request = urlencode('POST');
 				$request .= '&'.urlencode($url);
@@ -269,27 +276,28 @@ class KyashPay
 					
 				$auth_value = $this->key.":".$signature;
 				$b64_auth_value = base64_encode($auth_value);
-				if($this->logger && is_object($this->logger) && method_exists($this->logger,'write'))
-				{
-					$this->logger->write('Prepared signature: HMAC '.$b64_auth_value);
-				}
-				
-				$prepared_signature = "HMAC " + $b64_auth_value;
-				if($authorization == $prepared_signature)
+
+				$prepared_signature = "HMAC ".$b64_auth_value;
+                if($this->logger && is_object($this->logger) && method_exists($this->logger,'write')) {
+                    $this->logger->write($authorization . '\n' . $prepared_signature);
+                }
+				if($authorization === $prepared_signature)
 				{
 					if($kyash_code != $code)
 					{
 						if($this->logger && is_object($this->logger) && method_exists($this->logger,'write'))
 						{
+							$this->logger->write($kyash_code);
+							$this->logger->write($code);
 							$this->logger->write("HTTP/1.1 500 Kyash code not match");
 						}
 						header("HTTP/1.1 500 Kyash code not match");
 					}
 					else
 					{
-						if($status == 'paid')
+						if($status === 'paid')
 						{
-							if($kyash_status == 'pending')
+							if($kyash_status === 'pending')
 							{
 								$comment = "The customer ($phone) has made the payment on Kyash payshop point";
 								$order->update('paid',$comment);
@@ -299,9 +307,9 @@ class KyashPay
 								}
 							}
 						}
-						else if($status == 'expired')
+						else if($status === 'expired')
 						{
-							if($kyash_status == 'pending')
+							if($kyash_status === 'pending')
 							{
 								$comment = "The order was canceled since kyash payment was expired.";
 								$order->update('expired',$comment);
@@ -359,7 +367,7 @@ class KyashPay
 	public function getProtocol()
 	{
 		$protocol = 'http';
-		if((isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS'] == 'on' || $_SERVER['HTTPS'] == 1)) || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) &&  $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) 
+		if((isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS'] === 'on' || $_SERVER['HTTPS'] == 1)) || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) &&  $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https'))
 		{
   			$protocol = 'https';
 		}

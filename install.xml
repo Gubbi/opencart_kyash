@@ -1,28 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <modification>
+    <id>opencart_kyash</id>
     <name>Kyash Payment Gateway</name>
     <version>1.0</version>
     <author>Bilent Services Pvt Ltd</author>
     <link>https://www.kyash.com</link>
     <file path="catalog/controller/api/order.php">
         <operation>
-            <search><![CDATA[
-            $this->model_checkout_order->addOrderHistory($order_id, $this->request->post['order_status_id'], $this->request->post['comment'], $this->request->post['notify']);
-            $json['success'] = $this->language->get('text_success');
-            ]]></search>
-            <add position="After"><![CDATA[
-            //Begin Kyash
-            $this->load->model('payment/kyash');
-            $response = $this->model_payment_kyash->update($order_id);
-            if(!empty($response)) $json['success'] .= $response;
-            //End Kyash
-            ]]></add>
-        </operation>
-    </file>
-    <file path="catalog/controller/api/order.php">
-        <operation>
-            <search><![CDATA[
-            $this->model_checkout_order->addOrderHistory($order_id, $order_status_id);
+            <search index="2,4" trim="true"><![CDATA[
             $json['success'] = $this->language->get('text_success');
             ]]></search>
             <add position="After"><![CDATA[
@@ -36,22 +21,22 @@
     </file>
     <file path="catalog/view/theme/default/template/common/success.tpl">
         <operation>
-            <search><![CDATA[
-            <?php echo $content_bottom; ?>
+            <search regex="true"><![CDATA[
+            content_bottom
             ]]></search>
             <add position="Before"><![CDATA[
             <!-- Begin Kyash -->
-            <?php echo $kyash_content; ?></div>
+            <?php echo $kyash_content; ?>
             <!-- End Kyash -->
             ]]></add>
         </operation>
     </file>
     <file path="catalog/controller/checkout/success.php">
         <operation>
-            <search><![CDATA[
-            if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/common/success.tpl')) {
+            <search regex="true" index="1"><![CDATA[
+            success.tpl
             ]]></search>
-            <add position="Above"><![CDATA[
+            <add position="Before"><![CDATA[
             //Begin Kyash
             $this->load->model('payment/kyash');
             $this->data['kyash_content'] = $this->model_payment_kyash->getSuccessContent($this->request->get['order_id']);
