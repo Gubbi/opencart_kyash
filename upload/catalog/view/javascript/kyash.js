@@ -12,7 +12,7 @@ $(document).ready(function () {
     });
 
     $("#kyash_postcode").on("focus", function () {
-        if ($(this).val() == pincodePlaceHolder) {
+        if ($(this).val() === pincodePlaceHolder) {
             $(this).val("");
         }
     });
@@ -49,11 +49,11 @@ function pullNearByShops(url, loader) {
     loader = "<img src='catalog/view/theme/default/template/payment/kyash/image/loading.gif' alt='Processing...' />";
     closeShops();
     postcode = $("#kyash_postcode").val();
-    if (postcode.length == 0 || postcode == pincodePlaceHolder) {
+    if (postcode.length == 0 || postcode === pincodePlaceHolder) {
         alert("Enter your post code to retrieve the shops");
     }
     else {
-        if (old_postcode == postcode) {
+        if (old_postcode === postcode) {
             $("#see_nearby_shops_container").show();
             $("#kyash_close").show();
         }

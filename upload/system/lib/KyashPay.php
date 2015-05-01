@@ -52,7 +52,7 @@ class KyashPay {
             $httpd_username = filter_var($_SERVER['PHP_AUTH_USER'], FILTER_SANITIZE_STRING, FILTER_FLAG_ENCODE_HIGH | FILTER_FLAG_ENCODE_LOW);
             $httpd_password = filter_var($_SERVER['PHP_AUTH_PW'], FILTER_SANITIZE_STRING, FILTER_FLAG_ENCODE_HIGH | FILTER_FLAG_ENCODE_LOW);
 
-            if ($httpd_username !== $this->key || $httpd_password !== $this->secret) {
+            if ($httpd_username !== $this->key || $httpd_password !== $this->callback_secret) {
                 $this->log("Handler: Required credentials not found.");
                 header("HTTP/1.1 401 Unauthorized");
                 return;
