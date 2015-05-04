@@ -6,8 +6,8 @@
  * Time: 2:49 PM
  */
 
-class KyashModel extends Model {
-    function __construct() {
+trait KyashModel {
+    function init() {
         $this->load->model('setting/setting');
         $this->settings = $this->model_setting_setting->getSetting('kyash');
 
@@ -88,6 +88,10 @@ class KyashModel extends Model {
             }
         }
         return '';
+    }
+
+    function lookup($dictionary, $key, $default=NULL) {
+        return isset($dictionary[$key])? $dictionary[$key]: $default;
     }
 }
 

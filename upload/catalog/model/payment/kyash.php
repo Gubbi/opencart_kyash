@@ -1,21 +1,24 @@
 <?php
 require_once(DIR_SYSTEM . 'lib/common.php');
 
-class ModelPaymentKyash extends KyashModel {
-    function __construct() {
+class ModelPaymentKyash extends Model {
+    use KyashModel;
+
+    function __construct($params) {
+        parent::__construct($params);
         $this->load->model('checkout/order');
         $this->model_order = $this->model_checkout_order;
-        parent::__construct();
+        $this->init();
     }
 
     public function getMethod($address, $total) {
         $this->language->load('payment/kyash');
 
-        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "zone_to_geo_zone WHERE geo_zone_id = '" . (int)$this->settings->get('kyash_geo_zone_id') . "' AND country_id = '" . (int)$address['country_id'] . "' AND (zone_id = '" . (int)$address['zone_id'] . "' OR zone_id = '0')");
+        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "zone_to_geo_zone WHERE geo_zone_id = '" . (int)$this->lookup($this->settings, 'kyash_geo_zone_id') . "' AND country_id = '" . (int)$address['country_id'] . "' AND (zone_id = '" . (int)$address['zone_id'] . "' OR zone_id = '0')");
 
-        if ($this->settings->get('kyash_total') > 0 && $this->settings->get('kyash_total') > $total) {
+        if ($this->lookup($this->settings, 'kyash_total') > 0 && $this->lookup($this->settings, 'kyash_total') > $total) {
             $status = false;
-        } elseif (!$this->settings->get('kyash_geo_zone_id')) {
+        } elseif (!$this->lookup($this->settings, 'kyash_geo_zone_id')) {
             $status = true;
         } elseif ($query->num_rows) {
             $status = true;
@@ -35,7 +38,7 @@ class ModelPaymentKyash extends KyashModel {
                 'code' => 'kyash',
                 'title' => $this->language->get('text_title') . $additional,
                 'terms' => '',
-                'sort_order' => $this->settings->get('kyash_sort_order')
+                'sort_order' => $this->lookup($this->settings, 'kyash_sort_order')
             );
         }
 

@@ -125,6 +125,8 @@ class KyashPay {
         $curl = curl_init($url);
         curl_setopt($curl, CURLOPT_TIMEOUT, 30);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, TRUE);
+        curl_setopt($curl, CURLOPT_CAINFO, dirname(__FILE__) . '/cacert.pem');
         curl_setopt($curl, CURLOPT_USERPWD, $this->key . ':' . $this->secret);
         if($data) {
             curl_setopt($curl, CURLOPT_POST, 1);

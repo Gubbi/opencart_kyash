@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <modification>
+    <code>v0.2</code>
     <id>opencart_kyash</id>
     <name>Kyash Payment Gateway</name>
     <version>1.0</version>
@@ -21,20 +22,20 @@
     </file>
     <file path="catalog/view/theme/default/template/common/success.tpl">
         <operation>
-            <search regex="true"><![CDATA[
-            content_bottom
+            <search><![CDATA[
+            <?php echo $content_bottom; ?></div>
             ]]></search>
             <add position="Before"><![CDATA[
             <!-- Begin Kyash -->
-            <?php echo $kyash_content; ?>
+            <?php if(isset($kyash_content)) { echo $kyash_content; } ?>
             <!-- End Kyash -->
             ]]></add>
         </operation>
     </file>
     <file path="catalog/controller/checkout/success.php">
         <operation>
-            <search regex="true" index="1"><![CDATA[
-            success.tpl
+            <search><![CDATA[
+            if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/common/success.tpl')) {
             ]]></search>
             <add position="Before"><![CDATA[
             //Begin Kyash
