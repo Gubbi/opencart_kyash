@@ -15,13 +15,13 @@ trait KyashModel {
         $this->logger = new Log('kyash.log');
 
         require_once(DIR_SYSTEM . 'lib/KyashPay.php');
-        $this->api = new KyashPay($this->settings['kyash_public_api_id'], $this->settings['kyash_api_secrets']);
+        $this->api = new KyashPay($this->settings['kyash_public_api_id'], $this->settings['kyash_api_secrets'], $this->settings['kyash_callback_secret'], $this->settings['kyash_hmac_secret']);
         $this->api->setLogger($this->logger);
     }
 
     public function getOrderInfo($order_id) {
-        $result = $this->db->query('SELECT kyash_code, kyash_status FROM ' . DB_PREFIX . 'order  WHERE order_id = ' . (int)$order_id);
-        return array($result->row['kyash_code'], $result->row['kyash_status']);
+        $result = $this->db->query('SELECT kyash_code, kyash_status, kyash_expires FROM ' . DB_PREFIX . 'order  WHERE order_id = ' . (int)$order_id);
+        return array($result->row['kyash_code'], $result->row['kyash_status'], $result->row['kyash_expires']);
     }
 
     public function updateKyashStatus($order_id, $status) {
@@ -31,7 +31,7 @@ trait KyashModel {
     public function update($order_id) {
         if ($order_id > 0) {
             $order_info = $this->model_order->getOrder($order_id);
-            list($kyash_code, $kyash_status) = $this->getOrderInfo($order_id);
+            list($kyash_code, $kyash_status, ) = $this->getOrderInfo($order_id);
 
             if ($order_info && !empty($kyash_code)) {
                 if ($order_info['order_status_id'] == 7) {

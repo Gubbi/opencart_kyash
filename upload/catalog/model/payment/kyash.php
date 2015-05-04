@@ -104,24 +104,24 @@ class ModelPaymentKyash extends Model {
         return http_build_query($params);
     }
 
-    public function updateKyashCode($order_id, $code) {
-        $this->db->query("UPDATE `" . DB_PREFIX . "order` SET kyash_code = '" . $code . "' WHERE order_id = '" . (int)$order_id . "'");
-    }
-
-    public function updatePaymentMethod($order_id, $additional) {
+    public function updateKyashCode($order_id, $code, $status, $kyash_expires, $additional) {
         $this->language->load('payment/kyash');
         $method = $this->language->get('text_title') . $additional;
-        $this->db->query("UPDATE `" . DB_PREFIX . "order` SET payment_method = '" . $method . "' WHERE order_id = '" . (int)$order_id . "'");
+        $this->db->query("UPDATE `" . DB_PREFIX . "order` SET kyash_code = '" . $code . "', kyash_status = '" . $status ."', kyash_expires = '" . $kyash_expires . "', payment_method = '" . $method . "' WHERE order_id = '" . (int)$order_id . "'");
     }
 
     public function getSuccessContent($order_id) {
         if ($order_id > 0) {
-            list($kyash_code, ) = $this->getOrderInfo($order_id);
+            list($kyash_code, ,$expires_on) = $this->getOrderInfo($order_id);
             if (empty($kyash_code))
                 return '';
 
             $order_info = $this->model_checkout_order->getOrder($order_id);
             $postcode = $order_info['payment_postcode'];
+
+            $dateTime = new DateTime("@".$expires_on);
+            $dateTime->setTimeZone(new DateTimeZone('Asia/Kolkata'));
+            $kc_expires_on = $dateTime->format("j M Y, g:i A");
             if (empty($postcode)) {
                 $postcode = 'Enter Pincode';
             }
@@ -131,6 +131,7 @@ class ModelPaymentKyash extends Model {
             $html = '
 			<div class="kyash_succcess_instructions" style="border-top:1px solid #ededed; margin-top:60px">
 				<h4>KyashCode: ' . $kyash_code . '</h4>
+                <p><span>KyashCode expires on ' . $kc_expires_on . '</span></p>
 				<p>' . nl2br(html_entity_decode($this->settings['kyash_instructions'])) . '</p>
 			</div>
 			<div class="kyash_succcess_instructions2">

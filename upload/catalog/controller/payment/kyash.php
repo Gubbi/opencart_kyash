@@ -10,7 +10,7 @@ class ControllerPaymentKyash extends Controller {
         $this->logger = new Log('kyash.log');
 
         require_once(DIR_SYSTEM . 'lib/KyashPay.php');
-        $this->api = new KyashPay($this->settings['kyash_public_api_id'], $this->settings['kyash_api_secrets']);
+        $this->api = new KyashPay($this->settings['kyash_public_api_id'], $this->settings['kyash_api_secrets'], $this->settings['kyash_callback_secret'], $this->settings['kyash_hmac_secret']);
         $this->api->setLogger($this->logger);
     }
 
@@ -37,10 +37,10 @@ class ControllerPaymentKyash extends Controller {
             $json['error'] = 'Payment error. ' . $response['message'];
         } else {
             $message = '';
+            $expires_on = $response['expires_on'];
+
             $this->model_checkout_order->addOrderHistory($this->session->data['order_id'], 1, $message, false);
-            $this->model_payment_kyash->updateKyashCode($order_info['order_id'], $response['id']);
-            $this->model_payment_kyash->updateKyashStatus($order_info['order_id'], 'pending');
-            $this->model_payment_kyash->updatePaymentMethod($order_info['order_id'], ', KyashCode - ' . $response['id']);
+            $this->model_payment_kyash->updateKyashCode($order_info['order_id'], $response['id'], 'pending', $expires_on, ', KyashCode - ' . $response['id']);
             $json['success'] = $this->url->link('checkout/success') . '&order_id=' . $order_info['order_id'];
         }
 
@@ -94,7 +94,7 @@ class ControllerPaymentKyash extends Controller {
 
         $url = $this->url->link('payment/kyash/handler');
         $updater = new KyashUpdater($this->model_checkout_order, $this->model_payment_kyash, $order_id);
-        list($kyash_code, $kyash_status) = $this->model_payment_kyash->getOrderInfo($order_id);
+        list($kyash_code, $kyash_status, ) = $this->model_payment_kyash->getOrderInfo($order_id);
         $this->api->callback_handler($updater, $kyash_code, $kyash_status, $url);
     }
 }
