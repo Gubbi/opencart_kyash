@@ -115,7 +115,7 @@ class KyashUpdater {
             $this->order->addOrderHistory($this->order_id, 2, $comment);
             $this->kyash->updateKyashStatus($this->order_id, 'paid');
         } else if ($status === 'expired') {
-            $this->order->addOrderHistory($this->order_id, 7, $comment);
+            $this->order->addOrderHistory($this->order_id, 14, $comment);
             $this->kyash->updateKyashStatus($this->order_id, 'expired');
         }
     }

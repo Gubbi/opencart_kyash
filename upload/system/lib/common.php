@@ -57,7 +57,7 @@ trait KyashModel {
                         return $message;
                     }
                 }
-                else if ($order_info['order_status_id'] == 3) {
+                else if ($order_info['order_status_id'] == 3 || $order_info['order_status_id'] == 5) {
                     $server_kc = $this->api->getKyashCode($kyash_code);
                     if (isset($server_kc['status']) && $server_kc['status'] !== 'error') {
                         if ($kyash_status !== $server_kc['status']) {
