@@ -42,18 +42,18 @@ If you are facing any FTP related errors while uploading and installing this ext
 ### Paid and Expired KyashCodes are not being marked as such in Opencart.
 Once you have successfully installed Kyash extension, if your orders are not being marked as paid after payment is done, then follow the below steps.
 
-1. Configure the Kyash Extension using your Kyash *Development API Credentials*.
-2. Create a test order with Kyash as the payment option.
-3. Note down the KyashCode returned.
-4. Login to your Kyash account and search for the KyashCode.
-5. Mark it as Paid.
-6. Check if the order status changes from "pending" to "processing" in opencart.
-7. If the status has not changed, then make the following entry in your .htaccess file just after the ```RewriteEngine On``` entry.<br/>
-  ```
-  RewriteCond %{HTTP:Authorization} .+
-  RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
-  ```
-8. Create another test order and mark it as paid to see if the issue is now fixed.
+* Configure the Kyash Extension using your Kyash *Development API Credentials*.
+* Create a test order with Kyash as the payment option.
+* Note down the KyashCode returned.
+* Login to your Kyash account and search for the KyashCode.
+* Mark it as Paid.
+* Check if the order status changes from "pending" to "processing" in opencart.
+* If the status has not changed, then make the following entry in your .htaccess file just after the ```RewriteEngine On``` entry.
+```
+RewriteCond %{HTTP:Authorization} .+
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+```
+* Create another test order and mark it as paid to see if the issue is now fixed.
 
 
 ## Support
