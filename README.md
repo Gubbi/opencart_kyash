@@ -48,11 +48,11 @@ Once you have successfully installed Kyash extension, if your orders are not bei
 4. Login to your Kyash account and search for the KyashCode.
 5. Mark it as Paid.
 6. Check if the order status changes from "pending" to "processing" in opencart.
-7. If the status has not changed, then make the following entry in your .htaccess file just after the ```RewriteEngine On``` entry.
-```
-RewriteCond %{HTTP:Authorization} .+
-RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
-```
+7. If the status has not changed, then make the following entry in your .htaccess file just after the ```RewriteEngine On``` entry.<br/>
+  ```
+  RewriteCond %{HTTP:Authorization} .+
+  RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+  ```
 8. Create another test order and mark it as paid to see if the issue is now fixed.
 
 
