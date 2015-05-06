@@ -15,7 +15,7 @@ trait KyashModel {
         $this->logger = new Log('kyash.log');
 
         require_once(DIR_SYSTEM . 'lib/KyashPay.php');
-        $this->api = new KyashPay($this->settings['kyash_public_api_id'], $this->settings['kyash_api_secrets'], $this->settings['kyash_callback_secret'], $this->settings['kyash_hmac_secret']);
+        $this->api = new KyashPay($this->lookup($this->settings, 'kyash_public_api_id'), $this->lookup($this->settings, 'kyash_api_secrets'), $this->lookup($this->settings, 'kyash_callback_secret'), $this->lookup($this->settings, 'kyash_hmac_secret'));
         $this->api->setLogger($this->logger);
     }
 
@@ -29,10 +29,12 @@ trait KyashModel {
     }
 
     public function update($order_id) {
+        $this->logger->write('Updating Order: ' . $order_id);
+
         if ($order_id > 0) {
             $order_info = $this->model_order->getOrder($order_id);
             list($kyash_code, $kyash_status, ) = $this->getOrderInfo($order_id);
-
+            $this->logger->write(array($order_info, $order_info['order_status_id'], $kyash_code, $kyash_status));
             if ($order_info && !empty($kyash_code)) {
                 if ($order_info['order_status_id'] == 7) {
                     if ($kyash_status === 'pending' || $kyash_status === 'paid') {
@@ -65,7 +67,7 @@ trait KyashModel {
                     }
 
                     if ($kyash_status === 'pending') {
-                        $response = $this->api->cancel($kyash_code);
+                        $response = $this->api->cancel($kyash_code, 'using_another_payment_method');
                         if (isset($response['status']) && $response['status'] === 'error') {
                             return '<span class="error">' . $response['message'] . '</span>';
                         }

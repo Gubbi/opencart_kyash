@@ -8,10 +8,12 @@
     <link>https://www.kyash.com</link>
     <file path="catalog/controller/api/order.php">
         <operation>
-            <search index="2,4" trim="true"><![CDATA[
+            <search index="1,3"><![CDATA[
             $json['success'] = $this->language->get('text_success');
             ]]></search>
-            <add position="After"><![CDATA[
+            <add position="replace"><![CDATA[
+            $json['success'] = $this->language->get('text_success');
+
             //Begin Kyash
             $this->load->model('payment/kyash');
             $response = $this->model_payment_kyash->update($order_id);
@@ -25,10 +27,11 @@
             <search><![CDATA[
             <?php echo $content_bottom; ?></div>
             ]]></search>
-            <add position="Before"><![CDATA[
+            <add position="replace"><![CDATA[
             <!-- Begin Kyash -->
             <?php if(isset($kyash_content)) { echo $kyash_content; } ?>
             <!-- End Kyash -->
+            <?php echo $content_bottom; ?></div>
             ]]></add>
         </operation>
     </file>
@@ -37,11 +40,13 @@
             <search><![CDATA[
             if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/common/success.tpl')) {
             ]]></search>
-            <add position="Before"><![CDATA[
+            <add position="replace"><![CDATA[
             //Begin Kyash
             $this->load->model('payment/kyash');
-            $this->data['kyash_content'] = $this->model_payment_kyash->getSuccessContent($this->request->get['order_id']);
+            $data['kyash_content'] = $this->model_payment_kyash->getSuccessContent($this->request->get['order_id']);
             //End Kyash
+
+            if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/common/success.tpl')) {
             ]]></add>
         </operation>
     </file>
