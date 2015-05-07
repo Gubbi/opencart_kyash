@@ -16,7 +16,9 @@ Opencart Integration Kit for the [Kyash Payment Gateway](http://www.kyash.com/).
 3. Login to your Opencart Admin.
 4. Go to ```Extensions```->```Payments```.
 5. Click *Edit*.
-6. Enter the credentials listed on your Kyash Account Settings. There are two types of credentials you can enter: To test the system, use the *Developer* credentials. To make the system live and accept your customer payments use the *Production* credentials.
+6. Enter the credentials listed on your Kyash Account Settings. There are two types of credentials you can enter:
+   * To test the system, use the *Developer* credentials. 
+   * To make the system live and accept your customer payments use the *Production* credentials.
 7. Copy the *Callback URL* listed in Opencart Settings and set it in your Kyash Account settings.
 
 ## Testing the Integration.
