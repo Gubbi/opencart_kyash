@@ -1,9 +1,9 @@
-Opencart Integration Kit for the [Kyash Payment Gateway](http://www.kyash.com/). This extension is OCMod based, hence your core files are not directly modified.
+Opencart Integration Kit for the [Kyash Payment Gateway](http://www.kyash.com/). This extension is OCMod based, hence your core files are not directly modified.<br> Download the lastest extension [here](https://secure.kyash.com/static/sdk/merchant/opencart_kyash-1.0.ocmod.zip)
 
 ## Installation
 1. Login to Opencart Admin.
 2. Go to ```Extensions```->```Extension Installer```.
-3. Upload the [opencart_kyash.ocmod.zip](https://github.com/Gubbi/opencart_kyash/archive/v1.0.ocmod.zip) file.
+3. Upload the [opencart_kyash.ocmod.zip](https://secure.kyash.com/static/sdk/merchant/opencart_kyash-1.0.ocmod.zip) file.
 4. Go to ```Extensions```->```Modifications```.
 5. Hit *Refresh* on the top right corner.
 6. Go to ```Extensions```->```Payments```.
