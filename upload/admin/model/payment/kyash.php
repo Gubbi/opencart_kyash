@@ -17,8 +17,6 @@ class ModelPaymentKyash extends Model {
         $this->db->query("ALTER TABLE `" . DB_PREFIX . "order` ADD kyash_expires INT(10) UNSIGNED NOT NULL");
     }
 
-    public function uninstall() {
-
-    }
+    public function uninstall() {}
 }
 ?>

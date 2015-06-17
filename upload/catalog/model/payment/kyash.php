@@ -36,7 +36,7 @@ class ModelPaymentKyash extends Model {
 
             $method_data = array(
                 'code' => 'kyash',
-                'title' => $this->language->get('text_title') . $additional,
+                'title' => ($this->lookup($this->settings, 'kyash_pg_text')?: 'Kyash - Pay at a nearby Shop') . $additional,
                 'terms' => '',
                 'sort_order' => $this->lookup($this->settings, 'kyash_sort_order')
             );
@@ -106,7 +106,7 @@ class ModelPaymentKyash extends Model {
 
     public function updateKyashCode($order_id, $code, $status, $kyash_expires, $additional) {
         $this->language->load('payment/kyash');
-        $method = $this->language->get('text_title') . $additional;
+        $method = ($this->lookup($this->settings, 'kyash_pg_text')?: 'Kyash - Pay at a nearby Shop') . $additional;
         $this->db->query("UPDATE `" . DB_PREFIX . "order` SET kyash_code = '" . $code . "', kyash_status = '" . $status ."', kyash_expires = '" . $kyash_expires . "', payment_method = '" . $method . "' WHERE order_id = '" . (int)$order_id . "'");
     }
 

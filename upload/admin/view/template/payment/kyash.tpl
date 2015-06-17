@@ -86,6 +86,17 @@
 
                     <div class="form-group">
                         <label class="col-sm-2 control-label"
+                               for="pg_text"><span data-toggle="tooltip"
+                                                   title="<?php echo $help_pg_text; ?>"><?php echo $entry_pg_text; ?></span></label>
+
+                        <div class="col-sm-10">
+                            <input type="text" name="kyash_pg_text" id="pg_text"
+                                   placeholder="<?php echo $entry_pg_text; ?>" class="form-control" value="<?php echo $pg_text; ?>" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label"
                                for="instructions"><?php echo $entry_instructions; ?></label>
 
                         <div class="col-sm-10">
