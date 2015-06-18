@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <modification>
-    <code>v0.2</code>
+    <code>v0.4</code>
     <id>opencart_kyash</id>
     <name>Kyash Payment Gateway</name>
-    <version>1.0</version>
+    <version>1.2</version>
     <author>Bilent Services Pvt Ltd</author>
     <link>https://www.kyash.com</link>
     <file path="catalog/controller/api/order.php">
@@ -38,15 +38,43 @@
     <file path="catalog/controller/checkout/success.php">
         <operation>
             <search><![CDATA[
+            $this->cart->clear();
+            ]]></search>
+            <add position="replace"><![CDATA[
+            //Begin Kyash
+            $data['order_id'] = $this->session->data['order_id'];
+            //End Kyash
+
+            $this->cart->clear();
+            ]]></add>
+        </operation>
+        <operation>
+            <search><![CDATA[
             if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/common/success.tpl')) {
             ]]></search>
             <add position="replace"><![CDATA[
             //Begin Kyash
             $this->load->model('payment/kyash');
-            $data['kyash_content'] = $this->model_payment_kyash->getSuccessContent($this->request->get['order_id']);
+            if (isset($data['order_id'])) {
+                $data['kyash_content'] = $this->model_payment_kyash->getSuccessContent($data['order_id']);
+            }
             //End Kyash
 
             if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/common/success.tpl')) {
+            ]]></add>
+        </operation>
+    </file>
+    <file path="catalog/controller/account/success.php">
+        <operation>
+            <search><![CDATA[
+            $data['header'] = $this->load->controller('common/header');
+            ]]></search>
+            <add position="replace"><![CDATA[
+            $data['header'] = $this->load->controller('common/header');
+
+            //Begin Kyash
+            $data['kyash_content'] = '';
+            //End Kyash
             ]]></add>
         </operation>
     </file>
