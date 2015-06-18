@@ -3,7 +3,7 @@ Opencart Integration Kit for the [Kyash Payment Gateway](http://www.kyash.com/).
 ## Installation
 1. Login to Opencart Admin.
 2. Go to ```Extensions```->```Extension Installer```.
-3. Upload the [opencart_kyash.ocmod.zip](https://secure.kyash.com/static/sdk/merchant/opencart_kyash-1.0.ocmod.zip) file.
+3. Upload the [opencart_kyash.ocmod.zip](https://secure.kyash.com/static/sdk/merchant/opencart_kyash-1.1.ocmod.zip) file.
 4. Go to ```Extensions```->```Modifications```.
 5. Hit *Refresh* on the top right corner.
 6. Go to ```Extensions```->```Payments```.
