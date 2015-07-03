@@ -57,6 +57,13 @@ RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 ```
 * Create another test order and mark it as paid to see if the issue is now fixed.
 
+### SSL Issue
+By default HTTPS scheme is used. If there are any SSL issue, alternatively you can use HTTP scheme as explained below.
+1. Go to `system`->`lib` from root folder.
+2. Open `KyashPay.php` file.
+3. Replace this line `private static $baseUri = 'https://api.kyash.in/v1';` with `private static $baseUri = 'http://api.kyash.in/v1';`.
+4. Also replace `public $use_https = true;` as `public $use_https = false;`.
+
 
 ## Support
 Contact developers@kyash.com for any issues you might be facing with this Kyash extension or call +91 8050114225.
