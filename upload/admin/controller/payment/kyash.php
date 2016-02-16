@@ -37,7 +37,6 @@ class ControllerPaymentKyash extends Controller {
         $data['entry_hmac_secret'] = $this->language->get('entry_hmac_secret');
         $data['entry_callback_url'] = $this->language->get('entry_callback_url');
         $data['entry_pg_text'] = $this->language->get('entry_pg_text');
-        $data['entry_instructions'] = $this->language->get('entry_instructions');
 
         $data['entry_total'] = $this->language->get('entry_total');
         $data['entry_geo_zone'] = $this->language->get('entry_geo_zone');
@@ -134,15 +133,6 @@ class ControllerPaymentKyash extends Controller {
             $data['pg_text'] = $this->config->get('kyash_pg_text');
             if (empty($data['pg_text'])) {
                 $data['pg_text'] = 'Kyash - Pay at a nearby Shop';
-            }
-        }
-
-        if (isset($this->request->post['kyash_instructions'])) {
-            $data['instructions'] = $this->request->post['kyash_instructions'];
-        } else {
-            $data['instructions'] = $this->config->get('kyash_instructions');
-            if (empty($data['instructions'])) {
-                $data['instructions'] = '<p>Please pay at any of the authorized outlets before expiry.</p> <p>You need to mention only the KyashCode and may be asked for your mobile number during payment. No other details needed.</p> <p>Please wait for the confirmation SMS after payment. Remember to take a payment receipt.</p> <p>You can verify the payment status anytime by texting this KyashCode to +91 9243710000</p>';
             }
         }
 

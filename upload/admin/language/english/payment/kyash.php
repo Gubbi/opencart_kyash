@@ -14,7 +14,6 @@ $_['entry_callback_secret'] = 'Callback Secret';
 $_['entry_hmac_secret']     = 'HMAC Secret';
 $_['entry_callback_url']    = 'Callback URL';
 $_['entry_pg_text']         = 'Payment Method Text';
-$_['entry_instructions']    = 'Instructions';
 
 $_['entry_total']       = 'Total';
 $_['entry_geo_zone']    = 'Geo Zone';

@@ -47,39 +47,6 @@ class ControllerPaymentKyash extends Controller {
         $this->response->setOutput(json_encode($json));
     }
 
-    public function getPaymentPoints() {
-        $this->displayPaymentPointsList('/template/payment/kyash/payment_points.tpl');
-    }
-
-    public function getPaymentPoints2() {
-        $this->displayPaymentPointsList('/template/payment/kyash/payment_points2.tpl');
-    }
-
-    protected function displayPaymentPointsList($success_tpl_path) {
-        $pincode = $this->request->get['postcode'];
-        $response = $this->api->getPaymentPoints($pincode);
-        $data = array();
-        if (isset($response['status']) && $response['status'] === 'error') {
-            $data['error'] = $response['message'];
-
-            if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/kyash/error.tpl')) {
-                $template = $this->config->get('config_template') . '/template/payment/kyash/error.tpl';
-            } else {
-                $template = 'default/template/payment/kyash/error.tpl';
-            }
-        } else {
-            $data['payments'] = $response;
-
-            if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . $success_tpl_path)) {
-                $template = $this->config->get('config_template') . $success_tpl_path;
-            } else {
-                $template = 'default/template/payment/kyash/payment_points.tpl';
-            }
-        }
-
-        echo $this->response->setOutput($this->load->view($template, $data));
-    }
-
     public function handler() {
         $this->load->model('checkout/order');
         $this->load->model('payment/kyash');

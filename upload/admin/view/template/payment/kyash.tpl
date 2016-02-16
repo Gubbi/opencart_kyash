@@ -96,16 +96,6 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="col-sm-2 control-label"
-                               for="instructions"><?php echo $entry_instructions; ?></label>
-
-                        <div class="col-sm-10">
-                            <textarea cols="80" rows="8" name="kyash_instructions"
-                                      class="form-control"><?php echo $instructions; ?></textarea>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
                         <label class="col-sm-2 control-label" for="input-total"><span data-toggle="tooltip"
                                                                                       title="<?php echo $help_total; ?>"><?php echo $entry_total; ?></span></label>
 
