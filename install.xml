@@ -78,4 +78,18 @@
             ]]></add>
         </operation>
     </file>
+    <file path="catalog/controller/account/success.php">
+        <operation info="New variable catalog/controller/account/success.php">
+            <search><![CDATA[
+            $this->response->setOutput($this->render());
+            ]]></search>
+            <add position="replace"><![CDATA[
+            //Begin Kyash
+            $this->data['kyash_content'] = '';
+
+            $this->response->setOutput($this->render());
+            //End Kyash
+            ]]></add>
+        </operation>
+    </file>
 </modification>

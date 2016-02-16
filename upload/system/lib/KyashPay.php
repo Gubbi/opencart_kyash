@@ -1,13 +1,13 @@
 <?php
 
 class KyashPay {
-    private static $baseUri = 'http://localhost:8082/v1';
+    private static $baseUri = 'https://api.kyash.in/v1';
     public $key = '';
     public $secret = '';
     public $hmac = NULL;
     public $callback_secret = NULL;
     public $logger = NULL;
-    public $use_https = false;
+    public $use_https = true;
 
 
     public function __construct($key, $secret, $callback_secret, $hmac) {
@@ -23,13 +23,6 @@ class KyashPay {
 
     public function getKyashCode($kyash_code) {
         return $this->api_request(self::$baseUri . '/kyashcodes/' . $kyash_code);
-    }
-
-    public function capture($kyash_code) {
-        $url = self::$baseUri . '/kyashcodes/' . $kyash_code . '/capture';
-        $params = "completion_expected_by=" . strtotime("+3 day");
-        $params .= "&details=shipment completed";
-        return $this->api_request($url, $params);
     }
 
     public function cancel($kyash_code, $reason='requested_by_customer') {
